@@ -10,14 +10,14 @@
 #define CL_HPP_TARGET_OPENCL_VERSION 200
 #include <CL/cl2.hpp>
 
-inline cl::Device chooseDevice(const int idPlattform = -1, const int idDevice = -1)
+inline cl::Device chooseDevice(const int idPlatform = -1, const int idDevice = -1)
 {
-	std::vector<cl::Platform> allPlattforms;
-	cl::Platform::get(&allPlattforms);
+	std::vector<cl::Platform> allPlatforms;
+	cl::Platform::get(&allPlatforms);
 
-    if (idPlattform >= 0 && idDevice >= 0)
+    if (idPlatform >= 0 && idDevice >= 0)
     {
-        cl::Platform usedPlatform = allPlattforms[idPlattform];
+        cl::Platform usedPlatform = allPlatforms[idPlatform];
         std::vector<cl::Device> allDevices;
         usedPlatform.getDevices(CL_DEVICE_TYPE_ALL, &allDevices);
 
@@ -25,19 +25,19 @@ inline cl::Device chooseDevice(const int idPlattform = -1, const int idDevice = 
     }
 
 	std::cout << "Platforms" << std::endl;
-	for (int i = 0; i < allPlattforms.size(); i++) {
-		const cl::Platform& p = allPlattforms[i];
+	for (int i = 0; i < allPlatforms.size(); i++) {
+		const cl::Platform& p = allPlatforms[i];
 		std::cout << "\t" << i << ": " << p.getInfo<CL_PLATFORM_NAME>() << " - " << p.getInfo<CL_PLATFORM_VERSION>() << std::endl;
 	}
 
-	// Let the user choose the plattform
-	int plattform = 0;
-	while (allPlattforms.size() > 0) {
-		std::cout << "Choose plattform: ";
-		std::cin >> plattform;
+	// Let the user choose the platform
+	int platform = 0;
+	while (allPlatforms.size() > 0) {
+		std::cout << "Choose platform: ";
+		std::cin >> platform;
 
-		if (!std::cin || plattform < 0 || plattform >= allPlattforms.size()) {
-			std::cout << "Invalid plattform, choose again." << std::endl;
+		if (!std::cin || platform < 0 || platform >= allPlatforms.size()) {
+			std::cout << "Invalid platform, choose again." << std::endl;
 			std::cin.sync();
 			std::cin.clear();
 		}
@@ -46,12 +46,12 @@ inline cl::Device chooseDevice(const int idPlattform = -1, const int idDevice = 
 		}
 	}
 
-	cl::Platform usedPlatform = allPlattforms[plattform];
+	cl::Platform usedPlatform = allPlatforms[platform];
 
 	std::vector<cl::Device> allDevices;
 	usedPlatform.getDevices(CL_DEVICE_TYPE_ALL, &allDevices);
 
-	std::cout << "Devices on plattform " << usedPlatform.getInfo<CL_PLATFORM_NAME>() << std::endl;
+	std::cout << "Devices on platform " << usedPlatform.getInfo<CL_PLATFORM_NAME>() << std::endl;
 	for (int i = 0; i < allDevices.size(); i++) {
 		const cl::Device& d = allDevices[i];
 		std::cout << "\t" << i << ": " << d.getInfo<CL_DEVICE_NAME>() << " - " << d.getInfo<CL_DEVICE_VERSION>() << std::endl;
@@ -78,20 +78,20 @@ inline cl::Device chooseDevice(const int idPlattform = -1, const int idDevice = 
 
 inline cl::Device selectFirstGPU()
 {
-    std::vector<cl::Platform> allPlattforms;
-    cl::Platform::get(&allPlattforms);
+    std::vector<cl::Platform> allPlatforms;
+    cl::Platform::get(&allPlatforms);
 
-    // Iterate over all plattforms and retrieve all devices, select the first found GPU device
-    for (const cl::Platform& plattform : allPlattforms)
+    // Iterate over all platforms and retrieve all devices, select the first found GPU device
+    for (const cl::Platform& platform : allPlatforms)
     {
         try
         {
             std::vector<cl::Device> allDevices;
-            plattform.getDevices(CL_DEVICE_TYPE_GPU, &allDevices);
+            platform.getDevices(CL_DEVICE_TYPE_GPU, &allDevices);
 
             if (allDevices.size() == 1)
             {
-                std::cout << "Used platform: " << ": " << plattform.getInfo<CL_PLATFORM_NAME>() << " - " << plattform.getInfo<CL_PLATFORM_VERSION>() << std::endl;
+                std::cout << "Used platform: " << ": " << platform.getInfo<CL_PLATFORM_NAME>() << " - " << platform.getInfo<CL_PLATFORM_VERSION>() << std::endl;
                 std::cout << "Used Device" << ": " << allDevices[0].getInfo<CL_DEVICE_NAME>() << " - " << allDevices[0].getInfo<CL_DEVICE_VERSION>() << std::endl;
 
                 return allDevices[0];
